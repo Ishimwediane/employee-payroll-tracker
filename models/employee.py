@@ -27,4 +27,7 @@ class Employee(ABC):
             raise ValueError("salary is always negative")
         self._salary=value
 
+class FullTime(Employee):
+    def calculate_salary(self):
+        return self._salary*1.1
     
