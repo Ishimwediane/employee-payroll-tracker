@@ -1,19 +1,17 @@
 from .employee import Employee
 
 class Intern(Employee):
-   
-    def __init__(self, name,  department, position, stipend):
+    """Intern employee with fixed stipend."""
+
+    def __init__(self, name, department, position, stipend):
         super().__init__(name, department, position)
-        self.stipend = stipend
-        self._salary=stipend
-    
+        self._salary = stipend
+
     def compute_salary(self):
-        return self.stipend
-    
+        return self._salary
+
     def generate_payslip(self):
-        print("----------------------------------------")
-        print(f"Intern: {self.name}")
-        print(f"Department: {self.department} | Position: {self.position}")
-        print(f"Stipend: ${self.stipend:.2f}")
-        print(f"Total Pay: ${self.compute_salary():.2f}")
-        print("----------------------------------------")
+        print(f"--- Payslip for Intern: {self.name} ---")
+        print(f"ID: {self.employee_id} | Department: {self.department} | Position: {self.position}")
+        print(f"Stipend: ${self._salary:.2f} | Total: ${self.compute_salary():.2f}")
+        print("-" * 50)

@@ -1,76 +1,87 @@
 from abc import ABC, abstractmethod
 
 class Employee(ABC):
-    """base class"""
-    _id_counter =1 
-    
-    def __init__(self,name,department,position,bonus:float=0):
-        
-        self._name=name
-        self._employee_id=Employee._id_counter
-        Employee._id_counter+=1
-        self.department=department
-        self.position=position
-        self.bonus=bonus if bonus else 0
-        self._salary=0
-    
+    """Base class for all employee types."""
+
+    _id_counter = 1
+
+    def __init__(self, name: str, department: str, position: str, bonus: float = 0):
+        self.name = name
+        self._employee_id = Employee._id_counter
+        Employee._id_counter += 1
+        self.department = department
+        self.position = position
+        self.bonus = bonus
+        self._salary = 0
+
     @property
     def name(self):
         return self._name
-    
+
     @name.setter
-    def name(self,value):
+    def name(self, value):
         if not value.strip():
-            raise ValueError("name is require")
-        self._name=value
-    
-    @property
-    def salary(self):
-        return self._salary
-    
-    @salary.setter
-    def salary(self,value):
-        if value<0:
-            raise ValueError("salary is always negative")
-        self._salary=value
-        
+            raise ValueError("Name is required")
+        self._name = value
+
     @property
     def employee_id(self):
         return self._employee_id
-    
-   
 
-    
-    def update_salary(self,value):
-        self._salary=value
+    @property
+    def salary(self):
+        return self._salary
+
+    @salary.setter
+    def salary(self, value):
+        if value < 0:
+            raise ValueError("Salary cannot be negative")
+        self._salary = value
         
-    
-    
-    def update_bonus(self,value):
-        self.bonus=value
-    
-    def __str__(self):
-        return f"{self.name} (ID: {self._employee_id})"
+    @property
+    def bonus(self):
+        return self._bonus
 
-    def __repr__(self):
-        return f"Employee(emp_id='{self._employee_id}', name='{self.name}')"
+    @bonus.setter
+    def bonus(self, value):
+        if value < 0:
+            raise ValueError("Bonus cannot be negative")
+        self._bonus = value
+    @property
+    def tax(self):
+        """Rwanda progressive income tax based on salary only."""
+        s = self._salary
+        tax = 0
+        if s > 1000000:
+            tax += (s - 1000000) * 0.35
+            s = 1000000
+        if s > 250000:
+            tax += (s - 250000) * 0.30
+            s = 250000
+        if s > 100000:
+            tax += (s - 100000) * 0.25
+            s = 100000
+        if s > 30000:
+            tax += (s - 30000) * 0.20
+        return tax
+    
+    @property
+    def net_salary(self):
+        return self.compute_salary() - self.tax
+    
 
-    def __eq__(self, other):
-        if isinstance(other, Employee):
-            return self._employee_id == other.employee_id
-        return False
-    
-    @abstractmethod 
-    def compute_salary(self): 
-        return self._salary+self.bonus
-    
+    def update_salary(self, value):
+        self.salary = value
+
+    def update_bonus(self, value):
+        self.bonus = value
+
+    @abstractmethod
+    def compute_salary(self):
+        """Compute total salary including bonus."""
+        pass
+
+    @abstractmethod
     def generate_payslip(self):
-        print(f"Pay Slip for {self.name} (ID: {self.employee_id})")
-        print("-"*40)
-        print(f"Department: {self.department} | Position: {self.position}")
-        print(f"Base Salary: ${self._salary:.2f}")
-        print(f"Bonus: ${self.bonus:.2f}")
-        print(f"Total Salary: ${self.compute_salary():.2f}")
-        print("-" * 40)
-    
-     
+        """Prints employee payslip."""
+        pass
